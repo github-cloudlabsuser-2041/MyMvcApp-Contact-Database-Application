@@ -8,11 +8,11 @@ public class User
 
     public int Id { get; set; }
 
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
-    public string Email { get; set; }
+    public string Email { get; set; } = string.Empty;
 
-    public string Phone { get; set; } // Add this line
+    public string Phone { get; set; } = string.Empty; // Add this line
 
 }
 public class UserController : Controller
