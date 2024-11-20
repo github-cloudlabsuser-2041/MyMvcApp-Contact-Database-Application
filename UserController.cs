@@ -1,99 +1,105 @@
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using MyMvcApp.Models; // Add this line if User class is in Models namespace
+using MyMvcApp.Models;
+using Microsoft.AspNetCore.Http;
+using System.Linq;
 
-
-public class User
-
+namespace MyMvcApp.Controllers
 {
-
-    public int Id { get; set; }
-
-    public string Name { get; set; } = string.Empty;
-
-    public string Email { get; set; } = string.Empty;
-
-    public string Phone { get; set; } = string.Empty; // Add this line
-
-}
-public class UserController : Controller
-{
-    private List<User> userlist = new List<User>();
-
-    public ActionResult Index()
+    public class UserManagementController : Controller
     {
-        return View(userlist);
-    }
+        public static System.Collections.Generic.List<User> userlist = new System.Collections.Generic.List<User>();
 
-    // GET: User/Edit/5
-    public ActionResult Edit(int id)
-    {
-        var user = userlist.FirstOrDefault(u => u.Id == id);
-        if (user == null)
+        // GET: User
+        public ActionResult Index()
         {
-            return NotFound();
-        }
-        return View(user);
-    }
-
-    // POST: User/Edit/5
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public ActionResult Edit(int id, User user)
-    {
-        if (id != user.Id)
-        {
-            return BadRequest();
+            return View(userlist);
         }
 
-        if (ModelState.IsValid)
+        // GET: User/Details/5
+        public ActionResult Details(int id)
+        {
+            var user = userlist.FirstOrDefault(u => u.Id == id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
+
+        // GET: User/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: User/Create
+        [HttpPost]
+        public ActionResult Create(User user)
+        {
+            if (ModelState.IsValid)
+            {
+                userlist.Add(user);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(user);
+        }
+
+        // GET: User/Edit/5
+        public ActionResult Edit(int id)
+        {
+            var user = userlist.FirstOrDefault(u => u.Id == id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
+
+        // POST: User/Edit/5
+        [HttpPost]
+        public ActionResult Edit(int id, User user)
         {
             var existingUser = userlist.FirstOrDefault(u => u.Id == id);
-            if (existingUser != null)
+            if (existingUser == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
             {
                 existingUser.Name = user.Name;
                 existingUser.Email = user.Email;
-                existingUser.Phone = user.Phone;
+                // Update other properties as needed
+
                 return RedirectToAction(nameof(Index));
             }
-            return NotFound();
+            return View(user);
         }
-        return View(user);
-    }
 
-    // GET: User/Delete/5
-    public ActionResult Delete(int id)
-    {
-        var user = userlist.FirstOrDefault(u => u.Id == id);
-        if (user == null)
+        // GET: User/Delete/5
+        public ActionResult Delete(int id)
         {
-            return NotFound();
+            var user = userlist.FirstOrDefault(u => u.Id == id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
         }
-        return View(user);
-    }
 
-    // POST: User/Delete/5
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public ActionResult DeleteConfirmed(int id)
-    {
-        var user = userlist.FirstOrDefault(u => u.Id == id);
-        if (user != null)
+        // POST: User/Delete/5
+        [HttpPost]
+        public ActionResult Delete(int id, IFormCollection collection)
         {
+            var user = userlist.FirstOrDefault(u => u.Id == id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
             userlist.Remove(user);
             return RedirectToAction(nameof(Index));
         }
-        return NotFound();
-    }
-
-    // GET: User/Details/5
-    public ActionResult Details(int id)
-    {
-        var user = userlist.FirstOrDefault(u => u.Id == id);
-        if (user == null)
-        {
-            return NotFound();
-        }
-        return View(user);
     }
 }
-
