@@ -97,5 +97,3 @@ public class UserController : Controller
     }
 }
 
-  git config --global user.email "github_cloudlabsuser_2041@cloudlabsaiuser.com"
-  git config --global user.name "github_cloudlabsuser_2041"
